@@ -1,17 +1,17 @@
 CREATE TABLE IF NOT EXISTS genres (
 	genre_id SERIAL PRIMARY KEY,
-	name VARCHAR(40) NOT NULL
+	name VARCHAR(40) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS performers (
 	performer_id SERIAL PRIMARY KEY,
-	alias VARCHAR(40) NOT NULL
+	alias VARCHAR(40) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS albums (
 	album_id SERIAL PRIMARY KEY,
-	name VARCHAR(40) NOT NULL,
-	cr_year SMALLINT NOT NULL
+	name VARCHAR(40) NOT NULL UNIQUE,
+	cr_year INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS genre_performer (
@@ -32,3 +32,16 @@ CREATE TABLE IF NOT EXISTS tracks (
 	duration INTEGER NOT NULL,
 	album_id INTEGER NOT NULL REFERENCES albums(album_id)
 );
+
+CREATE TABLE IF NOT EXISTS compilations ( 
+	compilation_id SERIAL PRIMARY KEY,
+	name VARCHAR(40) NOT NULL UNIQUE,
+	comp_year INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS track_compilation ( 
+	tr_comp_id SERIAL PRIMARY KEY,
+	track_id INTEGER REFERENCES tracks(track_id),
+	compilation_id INTEGER REFERENCES compilations(compilation_id)
+)
+
