@@ -128,7 +128,7 @@ INSERT INTO tracks(name, duration, album_id)
 VALUES('python', '239', 6);
 
 INSERT INTO tracks(name, duration, album_id)
-VALUES('java', '123', 7);
+VALUES('my java', '123', 7);
 --
 INSERT INTO track_compilation(track_id, compilation_id)
 VALUES(1, 1);
