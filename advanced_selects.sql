@@ -79,7 +79,3 @@ WHERE a.album_id IN (
 		LIMIT 1
 	)
 )
-
-
-
-
