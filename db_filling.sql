@@ -225,5 +225,3 @@ VALUES(7, 7);
 
 INSERT INTO performer_album(album_id, performer_id)
 VALUES(8, 8);
-
-
