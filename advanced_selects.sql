@@ -27,21 +27,24 @@ UPDATE albums
 SET cr_year = 2020
 WHERE a_name = 'show';
 
-SELECT alias FROM performers p 
-JOIN performer_album pa ON p.performer_id = pa.performer_id 
-JOIN albums a ON pa.album_id = a.album_id 
-GROUP BY alias
-HAVING COUNT(CASE WHEN cr_year = 2020 THEN a.album_id END) = 0
-ORDER BY alias;
+-- Исправил запрос согласно рекомендациям
+SELECT DISTINCT alias FROM performers p 
+WHERE p.alias NOT IN (
+	SELECT DISTINCT alias FROM performers p 
+	JOIN performer_album pa ON p.performer_id = pa.performer_id 
+	JOIN albums a ON a.album_id = pa.album_id 
+	WHERE a.cr_year = 2020
+)
+ORDER BY p.alias 
 
-SELECT c_name FROM compilations c 
+-- Действительно, достаточно только DISTINCT
+SELECT DISTINCT c_name FROM compilations c 
 JOIN track_compilation tc ON c.compilation_id = tc.compilation_id 
 JOIN tracks t ON tc.track_id = t.track_id 
 JOIN albums a ON t.album_id = a.album_id 
 JOIN performer_album pa ON a.album_id = pa.album_id 
 JOIN performers p ON pa.performer_id  = p.performer_id 
-WHERE p.alias = 'K-DOT'
-GROUP BY c_name;
+WHERE p.alias = 'K-DOT';
 
 SELECT a_name FROM albums a 
 JOIN performer_album pa ON a.album_id = pa.album_id 
@@ -66,16 +69,14 @@ JOIN tracks t ON t.album_id = a.album_id
 GROUP BY alias, duration 
 HAVING duration = (SELECT MIN(duration) FROM tracks)
 
-SELECT a_name FROM albums a 
-JOIN tracks t ON a.album_id = t.album_id 
-WHERE a.album_id IN (
-	SELECT album_id FROM tracks
-	GROUP BY album_id
-	HAVING COUNT(album_id)= (
-		SELECT COUNT(album_id)
-		FROM tracks 
-		GROUP BY album_id 
-		ORDER BY COUNT
-		LIMIT 1
-	)
-)
+-- Переработанный последний запрос согласно замечаниям
+SELECT a_name FROM albums
+JOIN tracks ON albums.album_id = tracks.album_id 
+GROUP BY albums.album_id 
+HAVING COUNT(tracks.t_name) = (
+	SELECT COUNT(tracks.t_name) FROM albums
+	JOIN tracks ON albums.album_id = tracks.album_id 
+	GROUP BY albums.album_id 
+	ORDER BY COUNT(tracks.t_name)
+	LIMIT 1);
+
